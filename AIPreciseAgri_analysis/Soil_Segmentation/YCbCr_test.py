@@ -37,32 +37,43 @@ def plot1(flatten_view):
     # resampling the image by taking either the `mean`,
     # the `max` or the `median` value of each blocks.
     mean_view = np.mean(flatten_view, axis=3)
+    print("mean_view.shape = ", mean_view.shape)
+    # print("mean_view = ", mean_view)
+
     max_view = np.max(flatten_view, axis=3)
+    print("max_view.shape = ", max_view.shape)
+    # print("max_view = ", max_view)
+
     median_view = np.median(flatten_view, axis=3)
+    print("median_view.shape = ", median_view.shape)
+    # print("median_view = ", median_view)
+    print()
 
     rgb_view = [[median_view, "median"],
                 [max_view, "max"],
                 [mean_view, "mean"]]
 
     for rgb_i in rgb_view:
+        # break
         # RGB_image = median_view.astype('uint8')
         RGB_image = rgb_i[0].astype('uint8')
-        hsv_img = rgb2ycbcr(RGB_image)
-        hue_img = hsv_img[:, :, 0]
-        sat_img = hsv_img[:, :, 1]
-        value_img = hsv_img[:, :, 2]
+        ycbcr_img = rgb2ycbcr(RGB_image)
+        # hsv_img = rgb2hsv(RGB_image)
+        y_img = ycbcr_img[:, :, 0]
+        cb_img = ycbcr_img[:, :, 1]
+        cr_img = ycbcr_img[:, :, 2]
 
         fig, (ax0, ax1, ax2, ax3) = plt.subplots(ncols=4, figsize=(8, 3))
         # ax0.imshow(hue_img, cmap='hsv')
-        ax0.imshow(hue_img)
+        ax0.imshow(y_img)
         ax0.set_title("Y channel")
         ax0.axis('off')
         # ax1.imshow(sat_img, cmap='hsv')
-        ax1.imshow(sat_img)
+        ax1.imshow(cb_img)
         ax1.set_title("Cb channel")
         ax1.axis('off')
         # ax2.imshow(value_img, cmap='hsv')
-        ax2.imshow(value_img)
+        ax2.imshow(cr_img)
         ax2.set_title("Cr channel")
         ax2.axis('off')
         ax3.imshow(RGB_image)
@@ -72,12 +83,10 @@ def plot1(flatten_view):
 
         fig.tight_layout()
 
-
         # for a in ax:
         #     a.set_axis_off()
-print("Block shape = ", block_shape)
 
-    # plt.show()
+# plt.show()
 
 
 def plot2(flatten_view):
@@ -169,7 +178,7 @@ image = imread(filename, as_gray=False)  # open the image read
 start_time = time.time()
 
 # size of blocks
-block_shape = (32*3, 32*3, 1)   # it is the shape of the block
+block_shape = (32, 32, 1)   # it is the shape of the block
 # block_shape = (32, 32)
 
 # see astronaut as a matrix of blocks (of shape block_shape)   arr_out view_as_blocks(arr_in, block_shape)
@@ -190,6 +199,7 @@ print("Block shape = ", block_shape)
 print("View.shape", view.shape)
 print("Flatten_view.shape", flatten_view.shape)
 print("Total time:", end_time - start_time)
+
 plt.show()
 # plot image
 # plot2(flatten_view)
