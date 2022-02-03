@@ -2,8 +2,6 @@
 Hybrid application (SW/HW) for the soil segmentation algorithm.
 
 # Plan
-
-Objectives
 1. [Real accelerator management](#1-real-accelerator-management)
 2. [Profiling app Comp4Drones](#2-comp4drones-application-profiling)
 3. [Accelerator implementation](#3-accelerator-implementation)
