@@ -44,7 +44,9 @@ This script:
 
 ## HSV_test.py
 It does the same thing of the program above but instead of plotting in YCbCr color profile, it plots now the images in HSV color profile. All the steps are similar.
-![medan_hsv](../readme_images/median_hsv.png)
+
+![median_hsv](../readme_images/median_hsv.png)
+
 ## Histogram_test.py
 Also in this script the steps are similar:
  1. image reading with  `imread`;
@@ -94,9 +96,9 @@ Also in this script the steps are similar:
     - Histogram equalization image and its histogram
     - Adaptive equalization image and its histogram
 
-
-
 ![histogram_test](../readme_images/histogram_test.png)
+
+
 ## Contour_test.py
 This script is similar to the [Histogram_test.py](histogram_testpy):
  1. image is read, divided into blocks (32x32x1) and flattened.
@@ -118,7 +120,10 @@ This script is similar to the [Histogram_test.py](histogram_testpy):
     contours = measure.find_contours(img, 0.8)
     ```
     Returns a contourslist of (n,2)-ndarrays. Each contour is an ndarray of shape (n, 2), consisting of n (row, column) coordinates along the contour.
+
 ![contour_test](../readme_images/contour_test.png)
+
+
 ## Otsu_segmentation_test.py
 This script implements the test of the [otsu segmentation algorithm](https://en.wikipedia.org/wiki/Otsu%27s_method):
  1. the image is read, divided into blocks (32x32x1) and flattened.
@@ -154,7 +159,10 @@ This script implements the test of the [otsu segmentation algorithm](https://en.
     cv2.imshow("image masked ", cv2.resize(
       cv2_rgb_masked, (0, 0), fx=0.15, fy=0.15))
     ```
+
 ![otsu_segmentation](../readme_images/otsu_segmentation.png)
+
+
 ## Segmentation_test.py
 This script implements the test of segmentation to a set of images.
 1. each image of the set 
@@ -212,17 +220,17 @@ This script implements the test of segmentation to a set of images.
    ```
 
 6. **Find edges in an image using the Sobel filter** using [skimage.filters.sobel()](https://scikit-image.org/docs/dev/api/skimage.filters.html?highlight=sobel#skimage.filters.sobel):
-  ```python
+   ```python
    def sobel_and_imshow(img):
       segments_sobel = sobel(rgb2gray(img))
 
       print_img((img, segments_sobel), ("Original image", "Sobel filter"))
 
       return len(np.unique(segments_sobel))
-  ```
+   ```
 
 7. **Find watershed basins in image flooded from given markers** using [skimage.segmentation.watershed)](https://scikit-image.org/docs/dev/api/skimage.segmentation.html?highlight=segmentation#skimage.segmentation.watershed):
-  ```python
+   ```python
    # markers the desired number of markers 
    def watershed_and_imshow(img):
       gradient = sobel(rgb2gray(img))
@@ -243,6 +251,7 @@ This script implements the test of segmentation to a set of images.
 ![seg_quick](../readme_images/seg_quick.png)
 ![sobel_filter](../readme_images/sobel_filter.png)
 ![seg_watershed](../readme_images/seg_watershed.png)
+
 
 ## Soil_Segmentation.py
 This script applies the otsu segmentation algorithm. The output images are available in [SOIL_SEGMENTED_IMAGES](../SOIL_SEGMENTED_IMAGES) and [SOIL_SEGMENTED_MASKS](../SOIL_SEGMENTED_MASKS) directories,
