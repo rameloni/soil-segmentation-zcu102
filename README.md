@@ -10,4 +10,8 @@ Objectives
 4. Applicazione Soil segmentation.
 
 - [ ] Test checkbox 
-- [x] Test checkbox
+  - [ ] Test
+  - [x] Test 
+- [x] Test checkbox  
+  - [ ] Test
+  - [x] Test 
