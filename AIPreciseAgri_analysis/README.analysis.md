@@ -254,4 +254,4 @@ This script implements the test of segmentation to a set of images.
 
 
 ## Soil_Segmentation.py
-This script applies the otsu segmentation algorithm. The output images are available in [SOIL_SEGMENTED_IMAGES](../SOIL_SEGMENTED_IMAGES) and [SOIL_SEGMENTED_MASKS](../SOIL_SEGMENTED_MASKS) directories,
+This script applies the otsu segmentation algorithm. The output images are available in [SOIL_SEGMENTED_IMAGES](../SOIL_SEGMENTED_IMAGES) and [SOIL_SEGMENTED_MASKS](../SOIL_SEGMENTED_MASKS) directories.
