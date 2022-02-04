@@ -69,6 +69,8 @@ times = {'Divide and flatten': [],
          'Max filter': [],
          'Median filter': [],
          'rgb2ycbcr color space': [],
+         'Otsu threshold': [],
+         'Resize image': [],
          'Mask': [],
          'Masked image': [],
          'Writing images': [],
@@ -149,8 +151,18 @@ for file in filenames:
             start_time = time.time()
             # Threshold value based on Otsu's method
             val = filters.threshold_otsu(image)
+            end_time = time.time()
+            times['Otsu threshold'].append(elapsed_and_print(
+                start_time, end_time, "Otsu Threshold:"))
+
             # resize the flattened image to match the original size
+            start_time = time.time()
             image = resize(image, (_image_.shape[0], _image_.shape[1]))
+            end_time = time.time()
+            times['Resize image'].append(elapsed_and_print(
+                start_time, end_time, "Resize image:"))
+
+            start_time = time.time()
             mask_color = image < val
             mask = image < val
             end_time = time.time()

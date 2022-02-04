@@ -282,33 +282,36 @@ Script executed on AMD Ryzen 7 5800HS @ 3.2GHz (**silent mode**).
 
 | Code                      | Latency (ms)    | Latency (ms)    |
 | ------------------------- | --------------- | --------------- |
-| Divide and flatten        | 45.91 ms        | 45914 μs        |
-| Mean filter               | 25.26 ms        | 25260 μs        |
-| Max filter                | 39.45 ms        | 39452 μs        |
-| Median filter             | 386.29 ms       | 386297 μs       |
-| rgb2ycbcr color space     | 0.62 ms         | 625 μs          |
-| Mask                      | 488.21 ms       | 488211 μs       |
-| Masked image              | 283.68 ms       | 283682 μs       |
-| Writing image files       | 392.27 ms       | 392279 μs       |
-| **Total avg time elapsed**| **1520.34 ms**  | **1520344 μs**  |
+| Divide and flatten        | 48.99 ms        | 48994 μs        |
+| Mean filter               | 25.79 ms        | 25792 μs        |
+| Max filter                | 40.13 ms        | 40134 μs        |
+| Median filter             | 392.20 ms       | 392196 μs       |
+| rgb2ycbcr color space     | 0.59 ms         | 588 μs          |
+| Otsu threshold            | 0.92 ms         | 917 μs          |
+| Resize image              | 467.52 ms       | 467519 μs       |
+| Mask                      | 24.64 ms        | 24644 μs        |
+| Masked image              | 308.34 ms       | 308343 μs       |
+| Writing images            | 402.91 ms       | 402909 μs       |
+| **Total avg time elapsed**| **1576.34 ms**  | **1576341 μs**  |
 
 Script executed on AMD Ryzen 7 5800HS @ 3.2GHz (**boost mode**).
 
 | Code                      | Latency (ms)    | Latency (ms)    |
 | ------------------------- | --------------- | --------------- |
-| Divide and flatten        | 41.45 ms        | 41446 μs        |
-| Mean filter               | 20.93 ms        | 20927 μs        |
-| Max filter                | 31.72 ms        | 31723 μs        |
-| Median filter             | 308.50 ms       | 308504 μs       |
-| rgb2ycbcr color space     | 0.51 ms         | 510 μs          |
-| Mask                      | 396.36 ms       | 396358 μs       |
-| Masked image              | 236.81 ms       | 236812 μs       |
-| Writing image files       | 316.03 ms       | 316028 μs       |
-| **Total avg time elapsed**| **1271.11 ms**  | **1271107 μs**  |
+| Divide and flatten        | 38.53 ms        | 38533 μs        |
+| Mean filter               | 20.77 ms        | 20771 μs        |
+| Max filter                | 31.32 ms        | 31324 μs        |
+| Median filter             | 300.19 ms       | 300193 μs       |
+| rgb2ycbcr color space     | 0.51 ms         | 513 μs          |
+| Otsu threshold            | 0.74 ms         | 743 μs          |
+| Resize image              | 373.20 ms       | 373198 μs       |
+| Mask                      | 26.72 ms        | 26725 μs        |
+| Masked image              | 237.42 ms       | 237425 μs       |
+| Writing images            | 312.81 ms       | 312815 μs       |
+| **Total avg time elapsed**| **1245.39 ms**  | **1245386 μs**  |
 
-This latencies are the average of the elapsed times of 23 image elaborations ([Sample_images](../Sample_images)). These tables show that there are three parts about 10 to 20 times slower than the rest of the code and they are:
+This latencies are the average of the elapsed times of 23 image elaborations ([Sample_images](../Sample_images)). These tables show that there are two parts which can be implemented on FPGA about 10 to 20 times slower than the rest of the code and they are:
 1. Median filter
-2. Mask (code snippet of the masking)
-3. Masked image (code snippet to mask the image)
+2. Masked image (code snippet to mask the image)
 
-They can be implemented on FPGA to accelerate the whole computation and reduce the latencies Writing image files which consists on saving elaborated images is an exclusive task of the ARM and cannot implemented on the FPGA.
+Writing image files which consists on saving elaborated images is an exclusive task of the ARM and cannot implemented on the FPGA.
