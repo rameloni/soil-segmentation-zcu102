@@ -90,9 +90,11 @@ for file in filenames:
             mask_color = image < val
             mask = image < val
 
+            # set the pixels masked to 255
             _image_[mask_color, :] = 255
 
             # print the images
+            
             cv2_image = cv2.cvtColor(_image, cv2.COLOR_RGB2BGR)
             cv2.imshow("image", cv2.resize(
                 cv2_image, (0, 0), fx=0.15, fy=0.15))

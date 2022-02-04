@@ -7,7 +7,8 @@ It is the first step to port the application on the ZCU102: learning what the al
 - [Contour_test](#contour_testpy)
 - [Otsu_segmentation_test](#otsu_segmentation_testpy)
 - [Segmentation_test](#segmentation_testpy)
-- [Soil segmentation](#soil_segmenationpy)
+- [Soil segmentation](#soil_segmentationpy)
+
 
 ## YCbCr_test.py
 This script converts the input image in YCbCr color space. Also it shows how to use `view_as_block` of `skimage.util`. Block views can be incredibly useful when one wants to perform local operations on non-overlapping image patches. [Skimage](https://scikit-image.org/) is a collection of algorithms for image processing.
@@ -38,14 +39,17 @@ This script:
     - Cb channel
     - Cr channel
     - RGB channel
+
 ![max_ycbcr](../readme_images/max_ycbcr.png)
 ![mean_ycbcr](../readme_images/mean_ycbcr.png)
 ![median_ycbcr](../readme_images/median_ycbcr.png)
+
 
 ## HSV_test.py
 It does the same thing of the program above but instead of plotting in YCbCr color profile, it plots now the images in HSV color profile. All the steps are similar.
 
 ![median_hsv](../readme_images/median_hsv.png)
+
 
 ## Histogram_test.py
 Also in this script the steps are similar:
@@ -95,6 +99,7 @@ Also in this script the steps are similar:
     - Contrast stretching image and its histogram
     - Histogram equalization image and its histogram
     - Adaptive equalization image and its histogram
+
 
 ![histogram_test](../readme_images/histogram_test.png)
 
@@ -254,4 +259,18 @@ This script implements the test of segmentation to a set of images.
 
 
 ## Soil_Segmentation.py
-This script applies the otsu segmentation algorithm. The output images are available in [SOIL_SEGMENTED_IMAGES](../SOIL_SEGMENTED_IMAGES) and [SOIL_SEGMENTED_MASKS](../SOIL_SEGMENTED_MASKS) directories.
+This script applies the [otsu segmentation algorithm](#otsu_segmentation_testpy) on a set of sample images. The output images are available in [SOIL_SEGMENTED_IMAGES](../SOIL_SEGMENTED_IMAGES) and [SOIL_SEGMENTED_MASKS](../SOIL_SEGMENTED_MASKS) directories.
+
+ 1. it divides each image in 32x32x1 blocks
+ 2. it flattens it and compute the mean, max and median views
+ 3. then it extracts the ycbcr profile colors and applies the otsu segmentation algorithm:
+    ```python
+    # Threshold value based on Otsu's method
+    val = filters.threshold_otsu(image)
+    # resize the flattened image to match the original size
+    image = resize(image, (_image_.shape[0], _image_.shape[1]))
+    mask_color = image < val
+    mask = image < val
+    _image_[mask_color, :] = 255
+    ```
+ 4. finally, it writes the images segmented and the masks to the output directories
