@@ -8,8 +8,8 @@ It is the first step to port the application on the ZCU102: learning what the al
 - [Otsu_segmentation_test](#otsu_segmentation_testpy)
 - [Segmentation_test](#segmentation_testpy)
 - [Soil segmentation](#soil_segmentationpy)
-
-
+- [Timing analysis](#timing-analysis)
+# Behavioural analysis
 ## YCbCr_test.py
 This script converts the input image in YCbCr color space. Also it shows how to use `view_as_block` of `skimage.util`. Block views can be incredibly useful when one wants to perform local operations on non-overlapping image patches. [Skimage](https://scikit-image.org/) is a collection of algorithms for image processing.
 
@@ -274,3 +274,41 @@ This script applies the [otsu segmentation algorithm](#otsu_segmentation_testpy)
     _image_[mask_color, :] = 255
     ```
  4. finally, it writes the images segmented and the masks to the output directories
+
+
+# Timing analysis
+Average latencies report of [Soil_Segmentation.py](Soil_Segmentation/Soil_Segmentation.py).
+Script executed on AMD Ryzen 7 5800HS @ 3.2GHz (**silent mode**).
+
+| Code                      | Latency (ms)    | Latency (ms)    |
+| ------------------------- | --------------- | --------------- |
+| Divide and flatten        | 45.91 ms        | 45914 μs        |
+| Mean filter               | 25.26 ms        | 25260 μs        |
+| Max filter                | 39.45 ms        | 39452 μs        |
+| Median filter             | 386.29 ms       | 386297 μs       |
+| rgb2ycbcr color space     | 0.62 ms         | 625 μs          |
+| Mask                      | 488.21 ms       | 488211 μs       |
+| Masked image              | 283.68 ms       | 283682 μs       |
+| Writing image files       | 392.27 ms       | 392279 μs       |
+| **Total avg time elapsed**| **1520.34 ms**  | **1520344 μs**  |
+
+Script executed on AMD Ryzen 7 5800HS @ 3.2GHz (**boost mode**).
+
+| Code                      | Latency (ms)    | Latency (ms)    |
+| ------------------------- | --------------- | --------------- |
+| Divide and flatten        | 41.45 ms        | 41446 μs        |
+| Mean filter               | 20.93 ms        | 20927 μs        |
+| Max filter                | 31.72 ms        | 31723 μs        |
+| Median filter             | 308.50 ms       | 308504 μs       |
+| rgb2ycbcr color space     | 0.51 ms         | 510 μs          |
+| Mask                      | 396.36 ms       | 396358 μs       |
+| Masked image              | 236.81 ms       | 236812 μs       |
+| Writing image files       | 316.03 ms       | 316028 μs       |
+| **Total avg time elapsed**| **1271.11 ms**  | **1271107 μs**  |
+
+This latencies are the average of the elapsed times of 23 image elaborations ([Sample_images](../Sample_images)). These tables show that there are three parts about 10 to 20 times slower than the rest of the code and they are:
+1. Median filter
+2. Mask (code snippet of the masking)
+3. Masked image (code snippet of applying the mask to the image)
+
+They can be implemented on FPGA to accelerate the whole computation and reduce the latencies Writing image files which consists on saving elaborated images is an exclusive task of the ARM and cannot implemented on the FPGA.

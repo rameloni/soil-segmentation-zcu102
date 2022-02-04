@@ -1,6 +1,7 @@
 # Soil Segmentation for zcu102 on yocto
 Hybrid application (SW/HW) for the soil segmentation algorithm.
 - [Soil segmentation analysis](AIPreciseAgri_analysis)
+- [Soil segmentation timing analysis](AIPreciseAgri_analysis/README.analysis.md#timing-analysis)
 
 # Plan
 1. [Real accelerator management](#1---real-accelerator-management)
@@ -22,7 +23,7 @@ Profiling on the software part of the Sopil Segmentation heterogeneous system to
 
  - [ ] Running the software code on UltraScale+
     - [x] Behavioural test on PC
-    - [ ] Timing test on PC
+    - [x] Timing test on PC
     - [ ] Behavioural test on UltraScale+
     - [ ] Timing test on UltraScale+
  - [ ] Latencies table of the different parts
