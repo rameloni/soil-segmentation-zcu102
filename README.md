@@ -3,10 +3,10 @@ Hybrid application (SW/HW) for the soil segmentation algorithm.
 - [Soil segmentation analysis](AIPreciseAgri_analysis)
 
 # Plan
-1. [Real accelerator management](#1-real-accelerator-management)
-2. [Profiling app Comp4Drones](#2-comp4drones-application-profiling)
-3. [Accelerator implementation](#3-accelerator-implementation)
-4. [Soil Segmentation app](#4-soil-segmentation-app)
+1. [Real accelerator management](#1---real-accelerator-management)
+2. [Profiling app Comp4Drones](#2---comp4drones-application-profiling)
+3. [Accelerator implementation](#3---accelerator-implementation)
+4. [Soil Segmentation app](#4---soil-segmentation-app)
 
 
 ## 1 - Real accelerator management
