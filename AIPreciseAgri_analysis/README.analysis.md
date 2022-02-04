@@ -309,6 +309,6 @@ Script executed on AMD Ryzen 7 5800HS @ 3.2GHz (**boost mode**).
 This latencies are the average of the elapsed times of 23 image elaborations ([Sample_images](../Sample_images)). These tables show that there are three parts about 10 to 20 times slower than the rest of the code and they are:
 1. Median filter
 2. Mask (code snippet of the masking)
-3. Masked image (code snippet of applying the mask to the image)
+3. Masked image (code snippet to mask the image)
 
 They can be implemented on FPGA to accelerate the whole computation and reduce the latencies Writing image files which consists on saving elaborated images is an exclusive task of the ARM and cannot implemented on the FPGA.
