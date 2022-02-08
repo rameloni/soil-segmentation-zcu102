@@ -1,10 +1,10 @@
-stb
+stb/
 a.out
 b.out
 Median_filter.pnm
 Medianfilter.pnm
-       
-       
-        out_image_c.png
-        out_image_cpp.pnm
-        out_rgb_image.png
+             
+out_image_c.png
+out_image_cpp.pnm
+out_rgb_image.pn
+.vscode/
