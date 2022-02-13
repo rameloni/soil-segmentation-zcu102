@@ -100,7 +100,7 @@ for file in filenames:
 
             # see astronaut as a matrix of blocks (of shape block_shape)
             view = view_as_blocks(_image, block_shape)
-
+            
             # collapse the last two dimensions in one
             flatten_view = view.reshape(
                 view.shape[0], view.shape[1], view.shape[2], -1)

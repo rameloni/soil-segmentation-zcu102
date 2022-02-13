@@ -1,13 +1,20 @@
+from curses import resize_term
 import numpy as np
+from skimage import filters
+from skimage import morphology as morph
 from skimage.io import imread
 from skimage.util import view_as_blocks
 from skimage.color import rgb2hsv, rgb2ycbcr
 from skimage.transform import rescale, resize, downscale_local_mean
-
+import matplotlib.pyplot as plt
 import cv2
 import time
 import sys
 import os
+
+scriptpath = "/home/raffaele/Documents/soil-segmentation-zcu102/AIPreciseAgri_analysis/Soil_Segmentation/"
+sys.path.append(os.path.abspath(scriptpath))
+from Segmentation_test import print_img
 
 def elapsed_and_print(start_time, end_time, msg):
     print('|', f'{msg:{" "}{"<"}{25}}', '|',
@@ -26,6 +33,7 @@ times = {'Divide and flatten': [],
          'Mean filter': [],
          'Max filter': [],
          'Median filter': [],
+         'Real Median': [],
          'rgb2ycbcr color space': [],
          'Otsu threshold': [],
          'Resize image': [],
@@ -104,11 +112,44 @@ if len(sys.argv) >= 2:  # the input image is provided
         times['Median filter'].append(elapsed_and_print(
             start_time, end_time, "Median filter:"))
         print("median_view.shape", median_view.shape)
-        cv2.imwrite(filename+"filtered.JPG", median_view)
-        exit()
-        
+        new_size = (1000,1000, 3)
+        resized_image = np.zeros(new_size)
+        resized_image[:, :, 0] = resize(_image_[:,:,0], new_size[:2])*255
+        resized_image[:, :, 1] = resize(_image_[:,:,1], new_size[:2])*255
+        resized_image[:, :, 2] = resize(_image_[:,:,2], new_size[:2])*255
+        # print_img([resize(_image, (1000, 1000, 3)), resized_image], ["Image", "Real Median view"])
+        # plt.show()
+        # exit()
         start_time = time.time()
-        RGB_image = median_view.astype('uint8')
+        # compute the real median_view
+        # real_median_view = filters.median(_image, morph.cube(32))
+        # print(_image)
+        # print(resized_image.astype('uint8'))
+        real_median_view = np.zeros(new_size)
+        real_median_view[:, :, 0] = filters.median(resized_image[:, :, 0], morph.square(16))
+        real_median_view[:, :, 1] = filters.median(resized_image[:, :, 1], morph.square(16))
+        real_median_view[:, :, 2] = filters.median(resized_image[:, :, 2], morph.square(16))
+
+        # real_median_view = _image[:,:,1]
+        end_time = time.time()
+        times['Real Median'].append(elapsed_and_print(
+            start_time, end_time, "Real Median filter:"))
+        # print the median view
+        print(real_median_view.shape)
+        
+        # print_img([resize(_image, (1000, 1000, 3)), median_view.astype('uint8'),  real_median_view.astype('uint8')], ["Image", "Median view", "Real Median view"])
+        # print_img([resized_image.astype('uint8'), median_view.astype('uint8'),  real_median_view.astype('uint8')], ["Image", "Median view", "Real Median view"])
+        # plt.show()
+        cv2.imwrite(filename+"resized.JPG", cv2.cvtColor(resized_image.astype('uint16'), cv2.COLOR_RGB2BGR))   
+        cv2.imwrite(filename+"filtered.JPG", cv2.cvtColor(median_view.astype('uint16'), cv2.COLOR_RGB2BGR))    
+        cv2.imwrite(filename+"filtered_real.JPG", cv2.cvtColor(real_median_view.astype('uint16'), cv2.COLOR_RGB2BGR))    
+        # END MEDIAN TEST
+        # exit()
+
+        start_time = time.time()
+        # RGB_image = median_view.astype('uint8')
+        # RGB_image = real_median_view.astype('uint8')
+        RGB_image = _image.astype('uint8')
         ycbcr_img = rgb2ycbcr(RGB_image)
         y_img = ycbcr_img[:, :, 0]
         cb_img = ycbcr_img[:, :, 1]
@@ -119,7 +160,8 @@ if len(sys.argv) >= 2:  # the input image is provided
         print("rgb_image.shape", RGB_image.shape)
         print("cr_img.shape", cr_img.shape)
 
-        image = cr_img.copy()
+        image = cr_img.copy()   # cr used for otsu threshold
+        
 
 
         # image = value_img.copy()
@@ -131,6 +173,7 @@ if len(sys.argv) >= 2:  # the input image is provided
         times['Otsu threshold'].append(elapsed_and_print(
             start_time, end_time, "Otsu Threshold:"))
 
+        print("val", val)
         # resize the flattened image to match the original size
         print("image.shape", image.shape)
         start_time = time.time()
@@ -147,6 +190,7 @@ if len(sys.argv) >= 2:  # the input image is provided
         end_time = time.time()
         times['Mask'].append(elapsed_and_print(
             start_time, end_time, "Mask:"))
+        print("mask.shape", mask.shape)
 
         start_time = time.time()
         # set the pixels masked to 255
@@ -154,6 +198,9 @@ if len(sys.argv) >= 2:  # the input image is provided
         end_time = time.time()
         times['Masked image'].append(elapsed_and_print(
             start_time, end_time, "Masked image:"))
+        print("masked_image.shape", _image_.shape)
+
+        
 
         end_tot_time = time.time()
         times['Total time elapsed'].append(elapsed_and_print(
@@ -171,12 +218,12 @@ if len(sys.argv) >= 2:  # the input image is provided
         # cv2.waitKey(30)
 
         start_time = time.time()
-        # write the output images into the directories
-        # remember that file is the name of the image in the output dir
-        cv2.imwrite(os.path.join(seg_images_full_dir, file), cv2_rgb)
-        # write the mask image in the output dir
-        cv2.imwrite(os.path.join(seg_masks_full_dir, file),
-                    mask_color.astype('uint8')*255)
+             # write the mask image in the output dir
+
+        # cv2.imwrite(filename+"masked_image_with_real_median_16.JPG",cv2_rgb)
+        # cv2.imwrite(filename+"masked_image.JPG", cv2_rgb)
+        cv2.imwrite(filename+"masked_image_without_median.JPG", cv2_rgb)
+    
         end_time = time.time()
         times['Writing images'].append(elapsed_and_print(
             start_time, end_time, "Writing images:"))

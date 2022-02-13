@@ -3,6 +3,7 @@ Hybrid application (SW/HW) for the soil segmentation algorithm.
 
 - [Soil segmentation analysis](AIPreciseAgri_analysis)
 - [Soil segmentation timing analysis](AIPreciseAgri_analysis/README.analysis.md#timing-analysis)
+- [Median Filter](median-filter)
 
 # Plan
 1. [Real accelerator management](#1---real-accelerator-management)
