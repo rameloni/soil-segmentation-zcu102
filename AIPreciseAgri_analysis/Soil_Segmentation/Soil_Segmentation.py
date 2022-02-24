@@ -95,12 +95,13 @@ for file in filenames:
             _image_ = _image.copy()
 
             start_time = time.time()
+            # print(_image.shape)
             # size of blocks
             block_shape = (32, 32, 1)
 
             # see astronaut as a matrix of blocks (of shape block_shape)
             view = view_as_blocks(_image, block_shape)
-            
+
             # collapse the last two dimensions in one
             flatten_view = view.reshape(
                 view.shape[0], view.shape[1], view.shape[2], -1)
@@ -186,10 +187,10 @@ for file in filenames:
             #     cv2_image, (0, 0), fx=0.15, fy=0.15))
 
             cv2_rgb = cv2.cvtColor(_image_, cv2.COLOR_RGB2BGR)
-            # cv2.imshow("mask", cv2.resize(cv2_rgb,
-            #            (0, 0), fx=0.15, fy=0.15))
+            cv2.imshow("mask", cv2.resize(cv2_rgb,
+                       (0, 0), fx=0.15, fy=0.15))
 
-            # cv2.waitKey(30)
+            cv2.waitKey(20)
 
             start_time = time.time()
             # write the output images into the directories

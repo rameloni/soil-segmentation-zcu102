@@ -7,4 +7,7 @@ Medianfilter.pnm
 out_image_c.png
 out_image_cpp.pnm
 out_rgb_image.pn
+backup/
+median_francesca
+median_francesca.rar
 .vscode/
