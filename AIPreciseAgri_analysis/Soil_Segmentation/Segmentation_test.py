@@ -84,7 +84,7 @@ def watershed_and_imshow(img):
 
 """Starting the script"""
 
-root = '/home/raffaele/borsa-ricerca/soil-segmentation-zcu102/'  # root directory
+root = '/home/raffaele/Documents/soil-segmentation-zcu102/'  # root directory
 set = 'Sample_images'   # set images directory
 
 # getting images names

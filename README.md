@@ -3,6 +3,7 @@ Hybrid application (SW/HW) for the soil segmentation algorithm.
 
 - [Soil segmentation analysis](AIPreciseAgri_analysis)
 - [Soil segmentation timing analysis](AIPreciseAgri_analysis/README.analysis.md#timing-analysis)
+- [Median Filter](median-filter)
 
 # Plan
 1. [Real accelerator management](#1---real-accelerator-management)
@@ -16,6 +17,7 @@ Sobel/roberts accelerator.
 
  - [ ] Study of memory management
  - [ ] Study of communication management
+    - [ ] DMA
  - [ ] MDC backend MDC compatible with UltraScale+
 
 ## 2 - Comp4Drones application profiling
@@ -32,6 +34,8 @@ Profiling on the software part of the Sopil Segmentation heterogeneous system to
 
 ## 3 - Accelerator implementation
 The critical part should be the median filter. 
+ - [x] Extract the algorithm of Python function and make a C working implementation
+ - [ ] Hardware implementation
 
 ## 4 - Soil Segmentation app
 App integration on the UltraScale+
