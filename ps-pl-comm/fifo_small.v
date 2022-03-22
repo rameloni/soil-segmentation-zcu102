@@ -15,18 +15,21 @@ module fifo_small #(
 );
 
 
+ reg [size-1:0] dataToMem;
  reg [size-1:0] tmp [0:depth-1];
  reg [$clog2(depth)-1:0] addressInput, nextAddressInput;
  reg [$clog2(depth)-1:0] addressOutput, nextAddressOutput;
  reg [19:0] counterIn, counterOut;
  reg [19:0] counterInNext, counterOutNext;
  wire empty;
-
+integer i;
 
      always@(posedge clk, negedge rst_n)             
      begin
        if(rst_n == 0)
        begin
+         for (i=0; i<=depth-1; i=i+1)
+             tmp[i] <= {size{1'bx}};
          addressInput <= {$clog2(depth){1'b0}};
          addressOutput <= {$clog2(depth){1'b0}};
          counterIn <= 20'd0;
@@ -34,6 +37,7 @@ module fifo_small #(
        end
        else
        begin
+         tmp[addressInput] <= dataToMem;
          addressInput <= nextAddressInput;
          addressOutput <= nextAddressOutput;
          counterIn <= counterInNext;
@@ -56,13 +60,13 @@ module fifo_small #(
      begin
        if(enw && !full)
        begin
-         tmp[addressInput] = datain;
+         dataToMem = datain;
          nextAddressInput = addressInput + 1;
          counterInNext = counterIn + 1;
        end
        else
        begin
-         tmp[addressInput] = {size{1'bx}};
+         dataToMem = {size{1'bx}};
          nextAddressInput = addressInput;
          counterInNext = counterIn;
        end
