@@ -4,6 +4,7 @@ Hybrid application (SW/HW) for the soil segmentation algorithm.
 - [Soil segmentation analysis](AIPreciseAgri_analysis)
 - [Soil segmentation timing analysis](AIPreciseAgri_analysis/README.analysis.md#timing-analysis)
 - [Median Filter](median-filter)
+- [Communication Management](ps-pl-comm)
 
 # Plan
 1. [Real accelerator management](#1---real-accelerator-management)
@@ -13,11 +14,21 @@ Hybrid application (SW/HW) for the soil segmentation algorithm.
 
 
 ## 1 - Real accelerator management
-Sobel/roberts accelerator.
+Sobel/roberts accelerator or AES256.
 
- - [ ] Study of memory management
- - [ ] Study of communication management
-    - [ ] DMA
+ - [x] Study of memory management
+ - [x] Study of communication management (DMA)
+    - [x] Brief description of DMA and its interface 
+	- [x] Vivado schematic
+	- [x] svg schematic
+    - [x] Custom ip block
+	- [ ] AXIS interface
+	- [x] Creating a custom IP
+	- [x] Integrate IP and interface (make connections)
+	- [x] How to use the xdc + link xdc
+	- [x] Synth, Impl, Bitstream (.bin version, remember to check the setting option)
+    - [x] Create the C app to use DMA
+    - [x] Integrate the interface for AES256
  - [ ] MDC backend MDC compatible with UltraScale+
 
 ## 2 - Comp4Drones application profiling
