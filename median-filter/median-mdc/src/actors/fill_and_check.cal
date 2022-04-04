@@ -1,0 +1,16 @@
+package actors;
+
+actor fill_and_check()
+	int(size=8) in_px,
+	int(size=8) in_pivot,
+	int(size=16) in_buff_size, 
+	int(size=16) in_median_pos, 
+	int(size=8) in_second_median_value
+	==>
+  	int(size=8) out_px,
+	int(size=8) out_pivot,
+	int(size=16) out_buff_size, 
+	int(size=16) out_median_pos, 
+	int(size=8) out_second_median_value
+:
+end

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><XDF name="median_8middle">
+    <Port kind="Input" name="in_pivot">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="8"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Input" name="in_buff_size">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="11"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Input" name="in_median_pos">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="11"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Input" name="in_second_median_value">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="8"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Input" name="in_px">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="8"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Output" name="out_median_pos">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="11"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Output" name="out_buff_size">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="11"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Output" name="out_pivot">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="8"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Output" name="out_second_median_value">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="8"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Port kind="Output" name="out_px">
+        <Type name="int">
+            <Entry kind="Expr" name="size">
+                <Expr kind="Literal" literal-kind="Integer" value="8"/>
+            </Entry>
+        </Type>
+    </Port>
+    <Instance id="median_middle_3">
+        <Class name="actors.median_middle_actor"/>
+    </Instance>
+    <Instance id="median_middle_2">
+        <Class name="actors.median_middle_actor"/>
+    </Instance>
+    <Instance id="median_middle_5">
+        <Class name="actors.median_middle_actor"/>
+    </Instance>
+    <Instance id="median_middle_0">
+        <Class name="actors.median_middle_actor"/>
+    </Instance>
+    <Instance id="median_middle_1">
+        <Class name="actors.median_middle_actor"/>
+    </Instance>
+    <Instance id="median_middle_4">
+        <Class name="actors.median_middle_actor"/>
+    </Instance>
+    <Connection dst="median_middle_0" dst-port="in_pivot" src="" src-port="in_pivot"/>
+    <Connection dst="median_middle_0" dst-port="in_buff_size" src="" src-port="in_buff_size"/>
+    <Connection dst="median_middle_0" dst-port="in_median_pos" src="" src-port="in_median_pos"/>
+    <Connection dst="median_middle_0" dst-port="in_second_median_value" src="" src-port="in_second_median_value"/>
+    <Connection dst="median_middle_1" dst-port="in_px" src="median_middle_0" src-port="out_px"/>
+    <Connection dst="median_middle_1" dst-port="in_pivot" src="median_middle_0" src-port="out_pivot"/>
+    <Connection dst="median_middle_1" dst-port="in_buff_size" src="median_middle_0" src-port="out_buff_size"/>
+    <Connection dst="median_middle_1" dst-port="in_median_pos" src="median_middle_0" src-port="out_median_pos"/>
+    <Connection dst="median_middle_1" dst-port="in_second_median_value" src="median_middle_0" src-port="out_second_median_value"/>
+    <Connection dst="median_middle_2" dst-port="in_px" src="median_middle_1" src-port="out_px"/>
+    <Connection dst="median_middle_2" dst-port="in_pivot" src="median_middle_1" src-port="out_pivot"/>
+    <Connection dst="median_middle_2" dst-port="in_buff_size" src="median_middle_1" src-port="out_buff_size"/>
+    <Connection dst="median_middle_2" dst-port="in_median_pos" src="median_middle_1" src-port="out_median_pos"/>
+    <Connection dst="median_middle_2" dst-port="in_second_median_value" src="median_middle_1" src-port="out_second_median_value"/>
+    <Connection dst="median_middle_3" dst-port="in_px" src="median_middle_2" src-port="out_px"/>
+    <Connection dst="median_middle_3" dst-port="in_pivot" src="median_middle_2" src-port="out_pivot"/>
+    <Connection dst="median_middle_3" dst-port="in_buff_size" src="median_middle_2" src-port="out_buff_size"/>
+    <Connection dst="median_middle_3" dst-port="in_median_pos" src="median_middle_2" src-port="out_median_pos"/>
+    <Connection dst="median_middle_3" dst-port="in_second_median_value" src="median_middle_2" src-port="out_second_median_value"/>
+    <Connection dst="median_middle_4" dst-port="in_px" src="median_middle_3" src-port="out_px"/>
+    <Connection dst="median_middle_4" dst-port="in_pivot" src="median_middle_3" src-port="out_pivot"/>
+    <Connection dst="median_middle_4" dst-port="in_buff_size" src="median_middle_3" src-port="out_buff_size"/>
+    <Connection dst="median_middle_4" dst-port="in_median_pos" src="median_middle_3" src-port="out_median_pos"/>
+    <Connection dst="median_middle_4" dst-port="in_second_median_value" src="median_middle_3" src-port="out_second_median_value"/>
+    <Connection dst="" dst-port="out_median_pos" src="median_middle_5" src-port="out_median_pos"/>
+    <Connection dst="" dst-port="out_buff_size" src="median_middle_5" src-port="out_buff_size"/>
+    <Connection dst="" dst-port="out_pivot" src="median_middle_5" src-port="out_pivot"/>
+    <Connection dst="" dst-port="out_second_median_value" src="median_middle_5" src-port="out_second_median_value"/>
+    <Connection dst="" dst-port="out_px" src="median_middle_5" src-port="out_px"/>
+    <Connection dst="median_middle_0" dst-port="in_px" src="" src-port="in_px"/>
+    <Connection dst="median_middle_5" dst-port="in_px" src="median_middle_4" src-port="out_px"/>
+    <Connection dst="median_middle_5" dst-port="in_pivot" src="median_middle_4" src-port="out_pivot"/>
+    <Connection dst="median_middle_5" dst-port="in_buff_size" src="median_middle_4" src-port="out_buff_size"/>
+    <Connection dst="median_middle_5" dst-port="in_median_pos" src="median_middle_4" src-port="out_median_pos"/>
+    <Connection dst="median_middle_5" dst-port="in_second_median_value" src="median_middle_4" src-port="out_second_median_value"/>
+</XDF>

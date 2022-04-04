@@ -1,0 +1,16 @@
+package actors;
+
+actor median_middle_actor()
+	int(size=8) in_px,
+	int(size=8) in_pivot,
+	int(size=11) in_buff_size, 
+	int(size=11) in_median_pos, 
+	int(size=8) in_second_median_value
+	==>
+  	int(size=8) out_px,
+	int(size=8) out_pivot,
+	int(size=11) out_buff_size, 
+	int(size=11) out_median_pos, 
+	int(size=8) out_second_median_value
+:
+end
