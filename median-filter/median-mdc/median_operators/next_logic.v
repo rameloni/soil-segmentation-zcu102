@@ -67,7 +67,9 @@ module next_logic #(
             next_median_pos = in_median_pos;   // median_pos doesn't change 
     	else if ((lower_size + equal_size) > in_median_pos)//  || equal_size == in_median_pos)
 //            next_median_pos = BUFF_SIZE >> 1; // reset the median_pos
-    	next_median_pos = in_median_pos; // reset the median_pos
+    	next_median_pos = 0; // reset the median_pos
+    	else if (equal_size == in_median_pos)
+    		next_median_pos = 0; // reset the median_pos
     	else
             next_median_pos = in_median_pos - (lower_size + equal_size);
         

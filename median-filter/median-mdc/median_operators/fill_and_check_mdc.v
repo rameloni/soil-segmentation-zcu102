@@ -22,7 +22,7 @@ module fill_and_check #(
      * OUTPUT CONTROL SIGNALS
      */
     
-    output wire filling, fill_done,
+    output wire filling, fill_done, fill_last,// update_control_signals,
      
     /*
      * INPUT DATA: in_px, in_pivot, in_buff_size, in_median_pos, in_second_median_value
@@ -62,6 +62,7 @@ module fill_and_check #(
     	input wire out_second_median_value_full
  
     );
+	//wire fill_last;
 	
   	/*
 	 * BUFFER CONTROL SIGNALS
@@ -95,8 +96,9 @@ module fill_and_check #(
      */ 
     wire sending;								// the logic is sending the output pixels, it is busy
     wire [BUFF_SIZE_BIT-1:0] send_count;		// counting the output pixels
-    wire send_req;								// send request
-
+    reg send_req;								// send request
+    
+   // assign update_control_signals = send_req;
     
     integer i;	// needed by the buffer registers
 
@@ -106,8 +108,8 @@ module fill_and_check #(
     /*
      * 	FILL BUFFERS
      */
-    assign in_px_rd = (~send_req) & (~fill_done);
-  
+    assign in_px_rd = ~fill_done & ~send_req;
+  	//assign in_px_rd = (~fill_last) & (~fill_done);
     	
     fill_buffers #(.BUFF_SIZE(BUFF_SIZE), .BUFF_SIZE_BIT(BUFF_SIZE_BIT))
     	DUT_fill_buffers (
@@ -118,7 +120,7 @@ module fill_and_check #(
     	 */ 
 		.in_px(in_px),
     	.in_px_empty(in_px_empty),
-    	//.in_px_rd(in_px_rd),	// read a new pixel when fill buffers is ready.
+    	.in_px_rd(in_px_rd),	// read a new pixel when fill buffers is ready.
     	.in_px_valid(in_px_valid),	// read a new pixel when fill buffers is ready.
     
     	.pivot(in_pivot_samp),   
@@ -140,9 +142,11 @@ module fill_and_check #(
     	// INPUT CONTROL SIGNALS
     	.sending(sending),
     	.send_req(send_req),
+    	.free(~send_req),
     	// OUTPUT CONTROL SIGNALS
     	.filling(filling),		// filling status
-   		.fill_done(fill_done)	// all buffers are filled
+   		.fill_done(fill_done),	// all buffers are filled
+   		.fill_last(fill_last)
     );
     
     // UPDATE BUFFERS
@@ -198,8 +202,12 @@ module fill_and_check #(
 	 * SEND LOGIC
 	 */
 	 
-	
-	assign send_req = fill_done & (~sending);		// send a request if fill done and not already sending
+    always@(posedge clock, negedge reset)
+    	if (reset == 1'b0)			// erase the next buffer
+    		send_req <= 1'b0;
+    	else send_req <= fill_done & ~sending;
+    	
+	//assign send_req = fill_done & (~sending);		// send a request if fill done and not already sending
 	send_logic #(.BUFF_SIZE(BUFF_SIZE), .BUFF_SIZE_BIT(BUFF_SIZE_BIT))
 		DUT_send_logic (
 			
@@ -266,7 +274,7 @@ module fill_and_check #(
 				out_second_median_value <= 0;
 				
 			end
-		else if (sending == 1'b0) // if not sending can update output values buffer
+		else if (send_req == 1'b1) // if not sending can update output values buffer
 			begin
 				out_pivot <= next_pivot;
 				out_buff_size <= next_buff_size;	

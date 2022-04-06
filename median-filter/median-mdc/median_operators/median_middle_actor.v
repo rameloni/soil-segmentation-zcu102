@@ -84,7 +84,7 @@ module median_middle_actor #(
 	// delaying
 	reg [7:0] in_px_delay; // since the control signals related to the in_px are sampled, a px register used to delay the input is needed
 	reg in_px_empty_delay;
-	reg in_px_rd_delay, in_px_rd_delay0;
+	reg in_px_rd_delay; wire in_px_rd_delay0;
 		
 	reg [7:0] in_pivot_samp;// pivot register
     reg [BUFF_SIZE_BIT-1:0] in_buff_size_samp; // in_buffer_size_samp register
@@ -95,6 +95,8 @@ module median_middle_actor #(
 	wire filling;		// the logic is filling the buffers
 	wire fill_done;		// the logic has filled the buffers
     
+	
+	//wire up;
 	
 	/*
 	 * INPUT REGISTERS
@@ -123,7 +125,8 @@ module median_middle_actor #(
 		else if (in_pivot_rd && (~in_pivot_empty))
 			in_pivot_samp <= in_pivot;
     
-	assign in_pivot_rd = ~filling;	// if is not filling, samp a new pivot
+		//assign in_pivot_rd = up;	// if is not filling, samp a new pivot
+		assign in_pivot_rd = ~filling;	// if is not filling, samp a new pivot
 //	assign in_pivot_rd = fill_done;	// if is not filling, samp a new pivot
 
     
@@ -134,7 +137,8 @@ module median_middle_actor #(
 		else if (in_buff_size_rd && (~in_buff_size_empty))
 			in_buff_size_samp <= in_buff_size;
     
-	assign in_buff_size_rd = ~filling;	// if is filling don't read a new in buff size
+		//assign in_buff_size_rd = up;	// if is filling don't read a new in buff size
+		assign in_buff_size_rd = ~filling;	// if is filling don't read a new in buff size
 //		assign in_buff_size_rd = ~fill_done;	// if is filling don't read a new in buff size
     
 	// MEDIAN POS REGISTER
@@ -143,7 +147,8 @@ module median_middle_actor #(
 			in_median_pos_samp <= MEDIAN_POS;
 		else if (in_median_pos_rd && (~in_median_pos_empty))
 			in_median_pos_samp <= in_median_pos;
-    
+    	
+		//assign in_median_pos_rd = up;	// if is filling don't read a new in median pos
 		assign in_median_pos_rd = ~filling;	// if is filling don't read a new in median pos
 		//assign in_median_pos_rd = ~fill_done;	// if is filling don't read a new in median pos
 
@@ -154,7 +159,8 @@ module median_middle_actor #(
 		else if (in_second_median_value_rd && (~in_second_median_value_empty))
 			in_second_median_value_samp <= in_second_median_value;
     
-	assign in_second_median_value_rd = ~filling;	// if is filling don't read a new in median pos
+		//assign in_second_median_value_rd = up;	// if is filling don't read a new in median pos
+		assign in_second_median_value_rd = ~filling;	// if is filling don't read a new in median pos
 	//	assign in_second_median_value_rd = ~fill_done;	// if is filling don't read a new in median pos
     
 	
@@ -163,6 +169,9 @@ module median_middle_actor #(
 	 * FILLER
 	 */
 	// fill and check
+	wire fill_last;
+	//assign in_px_rd = (~fill_last) & (~fill_done);
+
 	fill_and_check #(.MEDIAN_POS(MEDIAN_POS), .BUFF_SIZE(BUFF_SIZE), .BUFF_SIZE_BIT(BUFF_SIZE_BIT), .DEFAULT_PIVOT(DEFAULT_PIVOT)) 
 		DUT_fill_and_checK (
 
@@ -177,7 +186,8 @@ module median_middle_actor #(
      
 			.filling(filling),
 			.fill_done(fill_done),
-			
+			.fill_last(fill_last),
+		//	.update_control_signals(up),
 			/*
 			 * INPUT DATA:  in_px, in_pivot, in_buff_size, in_median_pos, in_second_median_value
 			 */ 

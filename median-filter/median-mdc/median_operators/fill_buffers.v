@@ -15,9 +15,9 @@ module fill_buffers #(
      */ 
     input wire [7:0] in_px,     // input pixel delay
     input wire in_px_empty,		// control signals from fifo (delayed)
-    //output wire in_px_rd,
+    output wire in_px_rd,
     input wire in_px_valid,
-     
+    
     input wire [7:0] pivot, 						// input pivot sampled
     input wire [BUFF_SIZE_BIT-1:0] in_buff_size,	// in buff size sampled
 
@@ -36,9 +36,13 @@ module fill_buffers #(
     // INPUT CONTROL SIGNALS
     input wire sending, 		// if sending cannot rise up the fill_done
     input wire send_req, 		// if sending cannot rise up the fill_done
+    
+    input wire free,
     // OUTPUT CONTROL SIGNALS
     output wire filling,
-    output wire fill_done
+    output wire fill_done,
+    
+    output wire fill_last
     );
 	
 	/*
@@ -78,14 +82,33 @@ module fill_buffers #(
         //.restart(send_req)		// if not sending and fill done restart the count, new pixels could be sent
         );
     
-    assign filling = (in_px_count > 0);			// if the count is greater than zero the logic is filling
+    assign filling = (in_px_count > 0) & ~fill_done;			// if the count is greater than zero the logic is filling
     //assign filling = en_px_count;	// if is filling don't read a new in median pos
 	
-    assign fill_done = (in_px_count == in_buff_size) & filling;	// when the last pixel is received, raise the fill_done
+    assign fill_done = (in_px_count == in_buff_size);	// when the last pixel is received, raise the fill_done
     //assign fill_done = (in_px_count == buff_size_samp);         
      
-//    assign en_px_count = (~fill_done) & (~sending) & (~in_px_empty); 	// increase the count if fill not done, not sending and input not empty 
-    assign en_px_count = (~fill_done) & (in_px_valid) & (~in_px_empty); 	// increase the count if fill not done, not sending and input not empty
+//    assign en_px_count = (~fill_done) & (in_px_valid) & (~in_px_empty); 	// increase the count if fill not done, not sending and input not empty 
+    assign en_px_count = (~send_req) & (~fill_done) & (in_px_valid) & (~in_px_empty); 	// increase the count if fill not done, not sending and input not empty
+    
+    // new part
+    assign fill_last = (in_px_count == in_buff_size-1);
+    
+    
+    /*
+     * FSM
+     */
+//    fsm_fill_logic DUT_fsm_fill_logic (
+//    		.clk(clk), .rst_n(rst_n),
+//     		
+//    		.empty(in_px_empty),
+//    		.free(free),
+//    		.fill_done(fill_done),
+//    		
+//    		.read(in_px_rd)
+//     	
+//    	);
+//    	
     
 
     /*
@@ -176,3 +199,60 @@ module fill_buffers #(
             
             
 endmodule
+
+
+
+
+/*
+ * 	FSM FILL LOGIC
+ */	
+module fsm_fill_logic (
+		input wire clk,
+		input wire rst_n,
+    	
+		input wire empty,
+		input wire free,
+		input wire fill_done,
+		
+		output wire read
+		
+		);
+		
+	parameter IDLE=2'b00, READY=2'b01, READ=2'b11;
+	
+	reg [1:0] state, next_state;
+	
+	always@(posedge clk, negedge rst_n)
+		if (rst_n == 1'b0)
+			state <= IDLE;
+		else 
+			state <= next_state;
+		
+	
+		/*
+			 * NEXT LOGIC
+			 */
+	always@(state, empty, free, fill_done)
+		case(state)
+			IDLE: if(empty == 1'b0) next_state = READY;
+				else next_state = IDLE;
+			READY: if(free == 1'b1) next_state = READ;
+				else next_state = READY;
+			READ: if(fill_done == 1'b1) 
+					if(empty == 1'b0) next_state = IDLE;
+					else next_state = READY;
+				else next_state = READ;
+		endcase
+		
+	
+		/*
+		 * OUTPUT LOGIC
+		 */
+		
+	assign read = &state;
+	//	assign read = (state == READ & ~fill_done);
+	
+endmodule
+
+
+
