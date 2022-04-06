@@ -26,9 +26,9 @@ module median_middle_actor #(
 		input wire clock, reset,
     
 		/*
-		 * COMM SIGNALS
+		 * COMM SIGNALS INPUT
 		 */
-     
+    
 		// input data: in_px, in_pivot, in_buff_size, in_median_pos, in_second_median_value
 		input wire [7:0] in_px, 
 		output wire in_px_rd,
@@ -52,6 +52,9 @@ module median_middle_actor #(
 		input wire in_second_median_value_empty,
         
         
+		/* 
+		 * COMM SIGNALS OUTPUT
+		 */ 
 		// output data: out_px, out_pivot, out_buff_size, out_median_pos, out_second_median_value
 		output wire [7:0] out_px,
 		output wire out_px_wr,
@@ -75,44 +78,45 @@ module median_middle_actor #(
  
 		);
 	/*
-	 *  SIGNALS and MEMORIES
+	 *  SIGNALS and MEMORIES: in_px_delay, in_pivot_samp, in_buff_size_samp, in_median_pos_samp, in_second_median_value_samp
 	 */  
-	// px register to delay the input into filler_buffer since the control signals are sampled
-	reg [7:0] in_px_delay;
-	reg in_px_empty_delay;
 	
-	// pivot register
-	reg [7:0] in_pivot_samp;
-    
-	// in_buffer_size_samp register
-	reg [BUFF_SIZE_BIT-1:0] in_buff_size_samp;
-	wire filling;
-	wire fill_done;
-    
-	// in median pos register
-	reg [BUFF_SIZE_BIT-1:0] in_median_pos_samp;
-    
-	// in second median value
-	reg [7:0] in_second_median_value_samp;
+	// delaying
+	reg [7:0] in_px_delay; // since the control signals related to the in_px are sampled, a px register used to delay the input is needed
+	reg in_px_empty_delay;
+	reg in_px_rd_delay, in_px_rd_delay0;
+		
+	reg [7:0] in_pivot_samp;// pivot register
+    reg [BUFF_SIZE_BIT-1:0] in_buff_size_samp; // in_buffer_size_samp register
+	reg [BUFF_SIZE_BIT-1:0] in_median_pos_samp; // in median pos register
+    reg [7:0] in_second_median_value_samp; // in second median value
  
+	// control signals
+	wire filling;		// the logic is filling the buffers
+	wire fill_done;		// the logic has filled the buffers
     
-    
+	
 	/*
 	 * INPUT REGISTERS
 	 */
+	// DELAY REGISTER
 	always@(posedge clock, negedge reset)
 		if (reset == 1'b0)
 		begin
 			in_px_delay <= 8'dx;
 			in_px_empty_delay <= 1'b1;
+			in_px_rd_delay <= 1'b1;
 		end
 		else
 		begin
 			in_px_delay <= in_px;
 			in_px_empty_delay <= in_px_empty;
+			in_px_rd_delay <= in_px_rd;
+
 		end
-		
-	// sample pivot
+	
+			
+	// PIVOT REGISTER
 	always@(posedge clock, negedge reset)
 		if (reset == 1'b0)
 			in_pivot_samp <= DEFAULT_PIVOT;
@@ -123,7 +127,7 @@ module median_middle_actor #(
 //	assign in_pivot_rd = fill_done;	// if is not filling, samp a new pivot
 
     
-	// sample buff size
+	// BUFF SIZE REGISTER
 	always@(posedge clock, negedge reset)
 		if (reset == 1'b0)
 			in_buff_size_samp <= BUFF_SIZE;
@@ -133,7 +137,7 @@ module median_middle_actor #(
 	assign in_buff_size_rd = ~filling;	// if is filling don't read a new in buff size
 //		assign in_buff_size_rd = ~fill_done;	// if is filling don't read a new in buff size
     
-	// sample median pos
+	// MEDIAN POS REGISTER
 	always@(posedge clock, negedge reset)
 		if (reset == 1'b0)
 			in_median_pos_samp <= MEDIAN_POS;
@@ -143,7 +147,7 @@ module median_middle_actor #(
 		assign in_median_pos_rd = ~filling;	// if is filling don't read a new in median pos
 		//assign in_median_pos_rd = ~fill_done;	// if is filling don't read a new in median pos
 
-	// second median value samp
+	// SECOND MEDIAN VALUE REGISTER
 	always@(posedge clock, negedge reset)
 		if (reset == 1'b0)
 			in_second_median_value_samp <= DEFAULT_PIVOT;
@@ -155,6 +159,9 @@ module median_middle_actor #(
     
 	
 	
+	/*
+	 * FILLER
+	 */
 	// fill and check
 	fill_and_check #(.MEDIAN_POS(MEDIAN_POS), .BUFF_SIZE(BUFF_SIZE), .BUFF_SIZE_BIT(BUFF_SIZE_BIT), .DEFAULT_PIVOT(DEFAULT_PIVOT)) 
 		DUT_fill_and_checK (
@@ -165,38 +172,30 @@ module median_middle_actor #(
 			.clock(clock), .reset(reset),
     
 			/*
-			 * COMM SIGNALS
+			 * OUTPUT CONTROL SIGNALS
 			 */
      
 			.filling(filling),
 			.fill_done(fill_done),
 			
-			// input data: in_px, in_pivot, in_buff_size, in_median_pos, in_second_median_value
-			.in_px(in_px_delay), 
+			/*
+			 * INPUT DATA:  in_px, in_pivot, in_buff_size, in_median_pos, in_second_median_value
+			 */ 
+			.in_px(in_px_delay), 					// in_px delayed
+			.in_px_valid(in_px_rd_delay & (~in_px_empty_delay)),
 			.in_px_rd(in_px_rd),
 			.in_px_empty(in_px_empty_delay),		// not valid; assign valid = ~empty;
-    	
 
 			.in_pivot_samp(in_pivot_samp),
-//			.in_pivot_rd(),
-//			.in_pivot_empty(),
-    	
 			.in_buff_size_samp(in_buff_size_samp),
-//			.in_buff_size_rd,
-//			.in_buff_size_empty,
-    	
 			.in_median_pos_samp(in_median_pos_samp),
-//			.in_median_pos_rd(),
-//			.in_median_pos_empty(),
-    	
 			.in_second_median_value_samp(in_second_median_value_samp),
-			//.in_second_median_value_rd(),
-			//.in_second_median_value_empty(),
-        
-        
-			// output data: out_px, out_pivot, out_buff_size, out_median_pos, out_second_median_value
+
+			/*
+			 * OUTPUT DATA: out_px, out_pivot, out_buff_size, out_median_pos, out_second_median_value
+			 */ 
 			.out_px(out_px),
-			.out_px_wr(out_px_wr),
+			.out_px_wr(out_px_wr),	
 			.out_px_full(out_px_full),
         
 			.out_pivot(out_pivot),
