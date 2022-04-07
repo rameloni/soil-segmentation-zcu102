@@ -7,8 +7,8 @@
 
 // receives an input stream from an external buffer, fill the inner buffers and check the median, if the median is found --> end 
 module median_first_actor #(
-		parameter MEDIAN_POS = 10'd4,
-		BUFF_SIZE = 11'd8,
+		parameter MEDIAN_POS = 10'd8,
+		BUFF_SIZE = 11'd16,
 		BUFF_SIZE_BIT = $clog2(BUFF_SIZE) + 1'b1,
 		//BUFF_SIZE_BIT = 16,
 		DEFAULT_PIVOT = 8'd127

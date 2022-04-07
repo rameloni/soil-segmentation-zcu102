@@ -177,16 +177,16 @@ module fill_and_check #(
    		.lower_size(lower_size),	// buffer sizes
     	.equal_size(equal_size),
     	.larger_size(larger_size),
-    	
-    	.max_lower(max_lower), .min_lower(min_lower), // min and max values
-		.max_larger(max_larger), .min_larger(min_larger),  
+    	.in_buff_size(in_buff_size_samp),
+    	.max_lower({1'b0, max_lower}), .min_lower({1'b0, min_lower}), // min and max values
+		.max_larger({1'b0, max_larger}), .min_larger({1'b0, min_larger}),  
     
     	/*
 	 	 * 	"EXTERNAL" INPUT DATA: in_pivot_samp, in_median_pos_samp 
 	 	 */
-    	.in_pivot(in_pivot_samp),
+		.in_pivot({1'b0, in_pivot_samp}),
     	.in_median_pos(in_median_pos_samp),
-    
+    	.in_second_median_value({1'b0, in_second_median_value_samp}),
     	/*
      	 * OUTPUT DATA: next_pivot, next_buff_size, next_median_pos, next_second_median_value
      	 */
@@ -206,6 +206,7 @@ module fill_and_check #(
     	if (reset == 1'b0)			// erase the next buffer
     		send_req <= 1'b0;
     	else send_req <= fill_done & ~sending;
+//    send_req_gen DUT_send_req_gen (.clk(clock), .rst_n(reset), .fill_done(fill_done), .sending(sending), .send_req(send_req));
     	
 	//assign send_req = fill_done & (~sending);		// send a request if fill done and not already sending
 	send_logic #(.BUFF_SIZE(BUFF_SIZE), .BUFF_SIZE_BIT(BUFF_SIZE_BIT))
@@ -282,10 +283,55 @@ module fill_and_check #(
 				out_second_median_value <= next_second_median_value;
 			end
 
-		
-
-
 			
 		
 
 endmodule
+
+
+module send_req_gen (
+		input wire clk,
+		input wire rst_n,
+    	
+		input wire fill_done,
+		input wire sending,
+		
+		output wire send_req
+		);
+		
+	parameter IDLE=2'b00, WAIT=2'b01, SEND_REQ=2'b11;
+	
+	reg [1:0] state, next_state;
+	
+	always@(posedge clk, negedge rst_n)
+		if (rst_n == 1'b0)
+			state <= IDLE;
+		else 
+			state <= next_state;
+		
+	
+		/*
+			 * NEXT LOGIC
+			 */
+	always@(state, fill_done, sending)
+		case(state)
+			IDLE: if(fill_done == 1'b1 & sending == 1'b0) next_state = SEND_REQ;
+				else next_state = IDLE;
+				//else next_state = WAIT;
+			SEND_REQ: if(sending == 1'b0) next_state = SEND_REQ;
+				else next_state = IDLE;
+		endcase
+		
+	
+		/*
+		 * OUTPUT LOGIC
+		 */
+	
+	assign send_req = &state;
+	
+	//assign en_read = en_size_buff_samp;
+endmodule
+
+
+
+		

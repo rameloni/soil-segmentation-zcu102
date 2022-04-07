@@ -82,7 +82,7 @@ module fill_buffers #(
         //.restart(send_req)		// if not sending and fill done restart the count, new pixels could be sent
         );
     
-    assign filling = (in_px_count > 0) & ~fill_done;			// if the count is greater than zero the logic is filling
+    assign filling = (in_px_count > 0);			// if the count is greater than zero the logic is filling
     //assign filling = en_px_count;	// if is filling don't read a new in median pos
 	
     assign fill_done = (in_px_count == in_buff_size);	// when the last pixel is received, raise the fill_done
@@ -92,7 +92,7 @@ module fill_buffers #(
     assign en_px_count = (~send_req) & (~fill_done) & (in_px_valid) & (~in_px_empty); 	// increase the count if fill not done, not sending and input not empty
     
     // new part
-    assign fill_last = (in_px_count == in_buff_size-1);
+    assign fill_last = (in_px_count == in_buff_size-1) & (in_buff_size > 1);
     
     
     /*
@@ -251,8 +251,5 @@ module fsm_fill_logic (
 		
 	assign read = &state;
 	//	assign read = (state == READ & ~fill_done);
-	
+	//
 endmodule
-
-
-

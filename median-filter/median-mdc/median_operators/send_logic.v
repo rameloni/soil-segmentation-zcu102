@@ -86,7 +86,8 @@ module send_logic #(
      		
     	.send_req(send_req),
     	.restart(restart_count),
-     	
+    	.full(send_px_full),
+    	
     	.sending(sending),
     	.en_size_buff_samp(en_size_buff_samp),
     	.en_send(en_send)
@@ -118,6 +119,7 @@ module fsm_send_logic (
     	
 		input wire send_req,
 		input wire restart,
+		input wire full,
 		
 		output wire sending,
 		output reg en_size_buff_samp,
@@ -141,7 +143,7 @@ module fsm_send_logic (
 	 */
 	always@(state, send_req, restart)
 		case(state)
-			IDLE: if(send_req == 1'b1) next_state = SEND;
+			IDLE: if(send_req == 1'b1 & full == 1'b0) next_state = SEND;
 				else next_state = IDLE;
 			SEND: if(send_req == 1'b0 && restart == 1'b1) next_state = IDLE;
 				else next_state = SEND;
@@ -153,7 +155,7 @@ module fsm_send_logic (
 	 */
 	always@(state, send_req, restart)
 		case(state)
-			IDLE: if(send_req == 1'b1) en_send = 1'b1;
+			IDLE: if(send_req == 1'b1 & full==1'b0) en_send = 1'b1;
 				else en_send = 1'b0;
 			SEND: if(send_req == 1'b0 & restart == 1'b1) en_send = 1'b0;
 					else en_send = 1'b1;
@@ -161,7 +163,7 @@ module fsm_send_logic (
 			endcase
 	
 	always@(state, send_req)
-		if(state == IDLE && send_req == 1'b1) en_size_buff_samp = 1'b1;
+		if(state == IDLE && send_req == 1'b1 & full==1'b0) en_size_buff_samp = 1'b1;
 		else en_size_buff_samp = 1'b0;
 	
 		assign sending = state;

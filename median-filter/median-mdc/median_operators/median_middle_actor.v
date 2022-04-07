@@ -7,8 +7,8 @@
 
 // receives an input stream from an external buffer, fill the inner buffers and check the median, if the median is found --> end 
 module median_middle_actor #(
-		parameter MEDIAN_POS = 10'd4,
-		BUFF_SIZE = 11'd8,
+		parameter MEDIAN_POS = 10'd8,
+		BUFF_SIZE = 11'd16,
 		BUFF_SIZE_BIT = $clog2(BUFF_SIZE) + 1'b1,
 		//BUFF_SIZE_BIT = 16,
 		DEFAULT_PIVOT = 8'd127
@@ -170,7 +170,7 @@ module median_middle_actor #(
 	 */
 	// fill and check
 	wire fill_last;
-	//assign in_px_rd = (~fill_last) & (~fill_done);
+	assign in_px_rd = (~fill_last) & (in_px_rd_delay0);
 
 	fill_and_check #(.MEDIAN_POS(MEDIAN_POS), .BUFF_SIZE(BUFF_SIZE), .BUFF_SIZE_BIT(BUFF_SIZE_BIT), .DEFAULT_PIVOT(DEFAULT_PIVOT)) 
 		DUT_fill_and_checK (
@@ -193,7 +193,7 @@ module median_middle_actor #(
 			 */ 
 			.in_px(in_px_delay), 					// in_px delayed
 			.in_px_valid(in_px_rd_delay & (~in_px_empty_delay)),
-			.in_px_rd(in_px_rd),
+			.in_px_rd(in_px_rd_delay0),
 			.in_px_empty(in_px_empty_delay),		// not valid; assign valid = ~empty;
 
 			.in_pivot_samp(in_pivot_samp),
