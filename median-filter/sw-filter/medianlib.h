@@ -1,9 +1,3 @@
-/*
-    In this file there are the algorithms for compute the median(s), starting from the sorting based median function to the quickmedian.
-    As well as image read from txt and image write to txt in a known format.
-    All of this function works for uint8_t data.
-*/
-
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
@@ -113,7 +107,9 @@ uint8_t *box_median_filter(int x_kernel_size, int y_kernel_size, uint8_t *in_ima
     second_median_value:it is a support input for even array's sizes in which there isn't a center position but two
 */
 uint8_t quickmedian(uint8_t input_buff[], int median_pos, int l, int r, int pivot, uint8_t second_median_value)
-{
+{	
+	printf("----------------------------------------\n");
+	printf("size: %5d, l: %4d, r: %4d, pivot: %3d, s_med_val: %3d, med_pos: %3d\n", r-l, l, r, pivot, second_median_value, median_pos);
     if (r <= l)
     {
         fprintf(stderr, "Wrong right and left delimiters! Be sure that right_delimiter > left_delimiter.");
@@ -169,26 +165,39 @@ uint8_t quickmedian(uint8_t input_buff[], int median_pos, int l, int r, int pivo
         // moreover if max==min there is one value inside this buffer and it means that this value is the median, hence return max_lower (ATTENTION: one value doesn't mean one element)
         // but it is a mistake. For thi reason the following line is commented
         // return (max_lower == min_lower) ? max_lower : quickmedian(larger, next_median_pos, 0, larger_idx, next_pivot, second_median_value);
+        
+        printf("max_lower: %3d, min_lower: %3d, max_larger: %3d, min_larger: %3d\n", max_lower, min_lower, max_larger, min_larger);
+        printf("lower_size: %4d, equal_size: %4d, larger_size: %4d, next_med_pos: %3d, next_pivot: %3d, next2nd: %3d\n", lower_idx, eq_idx, larger_idx, median_pos, next_pivot, second_median_value);
         return quickmedian(lower, median_pos, 0, lower_idx, next_pivot, second_median_value);
     }
     else if (lower_idx + eq_idx > median_pos) // if the sum of lower_idx and eq_idx reachs the median expected position, it means that the median is inside the equal buffer
     {
+    
         // remember that size is a global variable
         if (size % 2 == 0 && lower_idx == median_pos) // if size is an even number --> the median is the arithmetic mean between the two center elements
         {
-            if (median_pos == 0)
+            if (median_pos == 0){
                 // median_pos==0 means that the searched element is in the first pos of previous-iteration-larger-array.
                 // it means that the median is the mean of the pivot and second_median_value (the element in median_pos-1 of the original input_buffer, that of the first function call)
+                printf("max_lower: %3d, min_lower: %3d, max_larger: %3d, min_larger: %3d\n", max_lower, min_lower, max_larger, min_larger);
+        		printf("lower_size: %4d, equal_size: %4d, larger_size: %4d, next_med_pos: %3d, next_pivot: %3d, next2nd: %3d\n", lower_idx, eq_idx, larger_idx, (pivot + second_median_value) / 2,  (pivot + second_median_value) / 2);
                 return (pivot + second_median_value) / 2;
-
-            else
+}
+            else{
+            printf("max_lower: %3d, min_lower: %3d, max_larger: %3d, min_larger: %3d\n", max_lower, min_lower, max_larger, min_larger);
+        printf("lower_size: %4d, equal_size: %4d, larger_size: %4d, next_med_pos: %3d, next_pivot: %3d, next2nd: %3d\n", lower_idx, eq_idx, larger_idx, median_pos,  (pivot + max_lower) / 2, (pivot + max_lower) / 2);
                 // else the median is the mean between pivot and max_lower "the element in pos median_pos-1"
                 return (pivot + max_lower) / 2;
+                }
         }
-        else
+        else{
+               printf("max_lower: %3d, min_lower: %3d, max_larger: %3d, min_larger: %3d\n", max_lower, min_lower, max_larger, min_larger);
+        printf("lower_size: %4d, equal_size: %4d, larger_size: %4d, next_med_pos: %3d, next_pivot: %3d, next2nd: %3d\n", lower_idx, eq_idx, larger_idx, median_pos,  pivot, pivot);
+ 
             // if size is an odd number the input_buff has a central element --> return pivot
             // if lower_idx != median_pos means that median_pos == median_pos-1 in both odd and even sizes --> return pivot
             return pivot;
+            }
     }
     else // the median is inside the larger buffer
     {
@@ -202,7 +211,9 @@ uint8_t quickmedian(uint8_t input_buff[], int median_pos, int l, int r, int pivo
         // moreover if max==min there is one value inside this buffer and it means that this value is the median, hence return max_lower (ATTENTION: one value doesn't mean one element)
         // but it is a mistake. For thi reason the following line is commented
         // return (max_larger == min_larger) ? max_larger : quickmedian(larger, next_median_pos, 0, larger_idx, next_pivot, second_median_value);
-
+       printf("max_lower: %3d, min_lower: %3d, max_larger: %3d, min_larger: %3d\n", max_lower, min_lower, max_larger, min_larger);
+        printf("lower_size: %4d, equal_size: %4d, larger_size: %4d, next_med_pos: %3d, next_pivot: %3d, next2nd: %3d\n", lower_idx, eq_idx, larger_idx, next_median_pos,  next_pivot, second_median_value);
+ 
         return quickmedian(larger, next_median_pos, 0, larger_idx, next_pivot, second_median_value);
     }
 }

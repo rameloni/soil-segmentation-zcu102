@@ -1,0 +1,1 @@
+median_8bit --> config id:1
