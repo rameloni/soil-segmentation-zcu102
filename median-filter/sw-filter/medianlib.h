@@ -1,9 +1,3 @@
-/*
-    In this file there are the algorithms for compute the median(s), starting from the sorting based median function to the quickmedian.
-    As well as image read from txt and image write to txt in a known format.
-    All of this function works for uint8_t data.
-*/
-
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 

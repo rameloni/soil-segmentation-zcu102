@@ -2,10 +2,9 @@
     This header file contains function for sorting uint8_t arrays.
     MergeSort and insertionSort
 */
-#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
+#ifndef SORTING_H
+#define SORTING_H
 #include <stdint.h>
-#endif
 void merge(uint8_t arr[], int l, int m, int r);
 
 void mergeSort(uint8_t arr[], int l, int r);
@@ -98,3 +97,4 @@ void insertionSort(uint8_t arr[], int l, int r)
         arr[j + 1] = key;
     }
 }
+#endif
